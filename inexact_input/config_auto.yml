@@ -1,0 +1,31 @@
+COMPUTER_SETUP:
+  cdtype: tf.complex128
+  compute_node: 3
+  dtype: tf.float64
+  use_gpu: true
+DATA:
+  K: 6
+  N1: 2
+  N2: 20
+  delta: 1/6
+  j: 2
+  lam: 1
+  n: 30
+  set_seed: true
+  sparsity: 5
+  use_dct: true
+MODEL:
+  dest_model: models_auto
+  model_nbr: 9
+  use_count: false
+NETWORK:
+  nbr_layers: 10
+  theta_max_val_init: 1.0e-07
+  theta_min_val_init: 0.0
+TRAIN:
+  batch_size: 1000
+  epochs: 4000
+  learning_rate: 2.0000000000000003e-06
+  shuffle: true
+  train_size: 8000
+  val_size: 100

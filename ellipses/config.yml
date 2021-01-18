@@ -1,0 +1,32 @@
+# Configuration file for the script 'Demo_train_nn.py'
+
+DATA:
+    N: 1024
+    srate: 0.15
+    path_data: '/mn/kadingir/vegardantun_000000/nobackup/ellipses'
+    path_pattern: '/mn/sarpanitu/ansatte-u4/vegarant/storage_firenet/samp_patt'
+
+MODEL:
+    dest_model: 'models'
+    model_nbr: 5
+
+TRAIN:
+    epochs: 100
+    batch_size: 2
+    train_size: 5000
+    add_noise: no
+    noise_level: 10
+    shuffle: yes
+
+NETWORK:
+    use_bias: yes
+    kernel_size: (3,3)
+    init_features: 32
+
+COMPUTER_SETUP:
+    use_gpu: yes
+    dtype:   'tf.float32'
+    cdtype:  'tf.complex64'
+    compute_node: 2
+
+

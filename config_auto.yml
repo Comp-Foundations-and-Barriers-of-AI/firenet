@@ -1,0 +1,48 @@
+# Configuration file for the script 'Demo_test_firenet_stability_auto.py'
+
+
+stability_algorithm:
+    stab_eta: 0.01
+    stab_lambda: 0.01
+    stab_gamma: 0.9
+    stab_tau: 0.001
+    max_num_noise_iter: 300
+    use_exponential_decay: no
+    expo_config:
+        stab_start_eta: 0.1
+        decay_rate: 0.7
+        decay_steps: 10
+        staircase: yes
+
+CS_param:
+    alg_name: 'firenet'  # 'sr_lasso_ergodic'   #   'sr_lasso_exponential'
+    lam: 0.00025
+    tau: 1
+    sigma: 1
+    n_iter: 5
+    p_iter: 10 
+    wavelet_name: 'db1'
+    levels: 5
+    delta: 0.000000001  # Only for exponential decay
+    initial_x_zero: no 
+    use_weights: yes
+    weights_param:
+        sparsity_levels: [4, 12, 48, 50, 100, 100]
+
+DATA:
+    N: 128
+    srate: 0.6
+    HCP_nbr: 1033
+    im_nbr: 3
+    runner_id: 19
+    dest_data: data_firenet_auto
+    dest_plots: plots_firenet_auto
+
+
+COMPUTER_SETUP:
+    use_gpu: yes
+    dtype:   'tf.float64'
+    cdtype:  'tf.complex128'
+    compute_node: 2
+
+

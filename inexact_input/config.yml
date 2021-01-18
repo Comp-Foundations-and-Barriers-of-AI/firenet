@@ -1,0 +1,36 @@
+TRAIN:
+    epochs: 4000
+    batch_size: 1000
+    train_size: 8000
+    val_size: 100
+    shuffle: yes
+    learning_rate: 2e-4
+
+MODEL:
+    dest_model: 'models_auto'
+    model_nbr: 1
+    use_count: no
+
+NETWORK:
+    nbr_layers : 10
+    theta_min_val_init : 0.0
+    theta_max_val_init : 0.0000001
+
+DATA:
+    K: 1
+    delta: 1/6
+    lam : 1
+    N1 : 2
+    N2 : 20
+    sparsity : 5
+    j : 2
+    n : 20
+    use_dct : yes
+    set_seed : yes
+
+COMPUTER_SETUP:
+    use_gpu: yes
+    dtype:   'tf.float64'
+    cdtype:  'tf.complex128'
+    compute_node: 2
+
