@@ -32,7 +32,7 @@ CS_param:
 DATA:
     N: 128
     srate: 0.6
-    HCP_nbr: 1033
+    HCP_nbr: 1003
     im_nbr: 3
     runner_id: 19
     dest_data: data_firenet_auto

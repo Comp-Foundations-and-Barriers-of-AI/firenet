@@ -17,7 +17,6 @@ from adv_tools_PNAS.automap_config import src_weights, src_data;
 from adv_tools_PNAS.automap_tools import *;
 from adv_tools_PNAS.Runner import Runner;
 from adv_tools_PNAS.Automap_Runner import Automap_Runner;
-from data_config import HCP_nbr, im_nbr
 
 from PIL import Image
 

@@ -1,7 +1,7 @@
 """
-This script runs the stability test on the FIRENET with the same input data as
-was used for the AUTOMAP network. It computes perturbations v_j meant to
-simulate worst-case effect. Each v_j in such a way that ||v_j|| >= ||r_j||
+This script runs the stability test on FIRENET with the same input data as was
+used for the AUTOMAP network. It computes perturbations v_j meant to simulate
+worst-case effect. Each v_j is computed in a way so that ||v_j|| >= ||r_j||
 where r_j is the perturbations used for AUTOMAP. 
 """
 import time
