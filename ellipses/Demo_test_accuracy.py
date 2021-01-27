@@ -23,7 +23,7 @@ from networks import UNet
 from tqdm import tqdm
 import yaml
 
-model_nbr = 32;
+model_nbr = 31;
 epoch_idx = 63
 attack_idx = 96
 path_model = f'models/model_{model_nbr:03}'

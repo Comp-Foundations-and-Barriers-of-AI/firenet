@@ -163,7 +163,7 @@ if use_exponential_decay:
 else:
     str3 = f'Use exponential_decay: {use_exponential_decay}, learning_rate: {learning_rate}'
 if alg_name.lower() ==  'sq_lasso_exponential':
-    str4 = f'n_iter: {n_iter}, p_iter: {p_iter}, delta_factor: {delta_factor}, eps_0: {epsilon_0}, lambda: {lam}, sigma: {sigma}, tau: {tau}, wname: {wavelet_name}, nres: {nres}, use_weights: {use_weights}';
+    str4 = f'n_iter: {n_iter}, p_iter: {p_iter}, eps_0: {epsilon_0}, lambda: {lam}, sigma: {sigma}, tau: {tau}, wname: {wavelet_name}, nres: {nres}, use_weights: {use_weights}';
     if use_weights:
         str4 += ", sparsity_levels: %s" % (cgf['CS_param']['weights_param']['sparsity_levels'])
 else:
