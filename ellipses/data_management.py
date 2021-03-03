@@ -17,7 +17,7 @@ import odl
 import shutil
 
 from tqdm import tqdm
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 
 # ----- Dataset creation, saving, and loading -----
@@ -255,6 +255,41 @@ def load_dataset(path, size=None, np_dtype=np.float64):
 
     return data
 
+def add_text_to_image(image, font_size, font_file, intensity_diff):
+    """Adds the word 'Tumor' to the image at a random location.
+
+    Arguments
+    ---------
+    image (ndarray): Array of with shape [N,N], and all elements lying in the 
+                     interval [0, 1].
+    font_size (int): Font size
+    font_file (str): Path to the font file. Usually these files has the extension .ttf
+    intensity_diff (int): All image pixels are integers in the interval [0, 255]. 
+                          We sample a pixel value 'pix_int' close to where the text is placed and add a text with the intensity value `pix_int + intensity_diff`. If `pix_int+intensity_diff > 255`, we use the intensity `pix_int-intensity_diff`.
+    
+    Returns
+    -------
+    Return a copy of the input image with the text `Tumor` added in the image. All values of this 
+    image lies in the interval [0,1].
+"""
+    N = image.shape[0]
+    pil_image = Image.fromarray(np.uint8(255*image))
+    
+    pos_x, pos_y = np.random.randint(low=int(N/4), high=int(3*N/4), size=2);
+    pos_x = int(pos_x)
+    pos_y = int(pos_y)
+    pixel_intensity = pil_image.getpixel((pos_x, pos_y))   
+
+    draw = ImageDraw.Draw(pil_image);
+    font = ImageFont.truetype(font_file, font_size)
+    
+    if pixel_intensity + intensity_diff > 255:
+        intensity = pixel_intensity - intensity_diff
+    else: 
+        intensity = pixel_intensity + intensity_diff
+
+    draw.text((pos_x, pos_y), 'Tumor', intensity, font=font)
+    return np.asarray(pil_image, 'float64')/255
 
 # ---- run data generation -----
 if __name__ == "__main__":
@@ -264,7 +299,7 @@ if __name__ == "__main__":
     dest = f'/mn/kadingir/vegardantun_000000/nobackup/ellipses/raw_data_{N}_TF';
 
     fname = 'data_management.py'
-    shutil.copyfile(fname, join(dest, fname))
+    #shutil.copyfile(fname, join(dest, fname))
 
     data_params = {  # additional data generation parameters
     "c_min": 20,
@@ -288,7 +323,20 @@ if __name__ == "__main__":
 
     numpy_seed = 4;
     np.random.seed(numpy_seed)
-    data_gen = sample_ellipses  # data generator function
-    create_iterable_dataset(
-        [N, N], set_params, sample_ellipses, data_params,
-    )
+
+    
+    ell_im, _ = sample_ellipses([N,N], **data_params);
+    print(ell_im)
+
+
+    font_size = 16;
+    font_file = "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf"
+    intensity_diff = 30;
+    im_with_text = add_text_to_image(ell_im, font_size, font_file, intensity_diff);
+    #print(im_with_text.dtype)
+    #print(np.amax(im_with_text))
+    #print(im_with_text.shape)
+    #data_gen = sample_ellipses  # data generator function
+    #create_iterable_dataset(
+    #    [N, N], set_params, sample_ellipses, data_params,
+    #)
