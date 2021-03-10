@@ -105,8 +105,6 @@ im /= 255;
 images = np.zeros((1,) + im.shape + (1,), dtype=np_dtype);
 images[0,:,:,0] = im;
 
-
-
 model1 = UNet(use_bias=use_bias, init_features=init_features, kernel_size=kernel_size)
 model1 = load_model(model1, N, path_model, model_name)
 

@@ -7,6 +7,7 @@ https://github.com/jmaces/robust-nets, by M. Genzel, J. Macdonald, and M. März
 """
 
 
+import tensorflow as tf
 import glob
 import os
 from os.path import join
@@ -21,6 +22,44 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 # ----- Dataset creation, saving, and loading -----
+
+class Ellipses_dataset(tf.data.Dataset):
+    def _generator(filenames):
+        for fname in filenames:
+            yield np.expand_dims(np.asarray(Image.open(fname), dtype=np.float32)/255, axis=2);
+    def __new__(cls, path, nbr_of_elements, N, intensity_diff=None, dtype=tf.float32):
+        if dtype == tf.float32:
+            np_dtype = np.float32
+        elif dtype == tf.float64:
+            np_dtype = np.float64
+        else:
+            np_dtype = np.float64
+            print('Unknow dtype')
+
+        filenames = []
+        if intensity_diff is None:
+            for i in range(nbr_of_elements):
+                fname = join(path, f"sample_{i}_clean.png")
+                filenames.append(fname)
+        else:
+            for i in range(nbr_of_elements):
+                fname = join(path, f"sample_{i}_clean.png")
+                filenames.append(fname)
+                fname = join(path, f"sample_{i}_tumor_{intensity_diff}.png")
+                filenames.append(fname)
+                
+
+        return tf.data.Dataset.from_generator(
+                       generator=cls._generator ,
+                       output_types=dtype,
+                       output_shapes=(N,N,1),
+                       #output_signature = tf.TensorSpec(shape = (1,N,N,1), dtype=tf.float32),
+                       args=(filenames,)
+                      )
+    
+            
+
+
 
 def load_sampling_pattern(fname):
     """ Load the sampling pattern and format it correctly.
@@ -85,19 +124,19 @@ def create_iterable_dataset(
 
     for idx in tqdm(range(N_train), desc="generating training signals"):
         x = _get_signal();
-        fname = os.path.join(set_params["path"], "train", "sample_{}.png".format(idx));
+        fname = os.path.join(set_params["path"], "train", "sample_{}_clean.png".format(idx));
         im = Image.fromarray(x);
         im.save(fname);
 
     for idx in tqdm(range(N_test), desc="generating training signals"):
         x = _get_signal();
-        fname = os.path.join(set_params["path"], "test", "sample_{}.png".format(idx));
+        fname = os.path.join(set_params["path"], "test", "sample_{}_clean.png".format(idx));
         im = Image.fromarray(x);
         im.save(fname);
     
     for idx in tqdm(range(N_val), desc="generating training signals"):
         x = _get_signal();
-        fname = os.path.join(set_params["path"], "val", "sample_{}.png".format(idx));
+        fname = os.path.join(set_params["path"], "val", "sample_{}_clean.png".format(idx));
         im = Image.fromarray(x);
         im.save(fname);
 
@@ -216,7 +255,7 @@ def sample_ellipses(
     return X, None 
 
 
-def load_dataset(path, size=None, np_dtype=np.float64):
+def load_dataset(path, size=None, np_dtype=np.float64, intensity_diff=None):
     """ Load dataset into memory.
 
     Arguments
@@ -245,10 +284,10 @@ def load_dataset(path, size=None, np_dtype=np.float64):
             print(f'Unable to read {size} images, could only retrive {num_samples} images');
     im = np.asarray(Image.open(files[0]), dtype=np_dtype);
     im /= 255;
-    
+
     data = np.zeros((num_samples,) + im.shape + (1,), dtype=np_dtype);
     data[0,:,:,0] = im;
-    
+
     for i in tqdm(range(1,num_samples), desc="Loading data"):
         im = np.asarray(Image.open(files[0]), dtype=np_dtype);
         data[i, :, :, 0] = im/255;
@@ -295,8 +334,8 @@ def add_text_to_image(image, font_size, font_file, intensity_diff):
 if __name__ == "__main__":
     """ Generate dataset
     """
-    N = 1024;
-    dest = f'/mn/kadingir/vegardantun_000000/nobackup/ellipses/raw_data_{N}_TF';
+    N = 512;
+    dest = f'/mn/kadingir/vegardantun_000000/nobackup/ellipses/raw_data_{N}_TF_tumor';
 
     fname = 'data_management.py'
     #shutil.copyfile(fname, join(dest, fname))
@@ -315,7 +354,7 @@ if __name__ == "__main__":
     }
 
     set_params = {
-        "num_train": 25000,
+        "num_train": 5000,
         "num_val": 500,
         "num_test": 500,
         "path": dest,
@@ -333,10 +372,29 @@ if __name__ == "__main__":
     font_file = "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf"
     intensity_diff = 30;
     im_with_text = add_text_to_image(ell_im, font_size, font_file, intensity_diff);
-    #print(im_with_text.dtype)
-    #print(np.amax(im_with_text))
-    #print(im_with_text.shape)
-    #data_gen = sample_ellipses  # data generator function
-    #create_iterable_dataset(
-    #    [N, N], set_params, sample_ellipses, data_params,
-    #)
+    
+    data_gen = sample_ellipses  # data generator function
+    create_iterable_dataset(
+        [N, N], set_params, sample_ellipses, data_params,
+    )
+    
+    print('Starting to add text to images')
+    name_dataset = ['train', 'test', 'val'];
+    for dir_name in name_dataset:
+        path = join(dest, dir_name)
+        files = glob.glob(os.path.join(path, "*clean.png"))
+        for i in range(len(files)):
+            filename = files[i];
+            filename_core = filename[:-9]
+            filename_with_text = filename_core + f"tumor_{intensity_diff}.png";
+            
+            # Load image
+            im = np.asarray(Image.open(filename), dtype=np.float64)
+            im /= 255
+            im_with_text = add_text_to_image(im, font_size, font_file, intensity_diff)
+            pil_im = Image.fromarray(np.uint8(255*im_with_text));
+            pil_im.save(filename_with_text)
+
+
+
+

@@ -1,0 +1,19 @@
+DATA:
+  srate: 0.15
+  path_data: '/mn/nam-shub-01/scratch/vegarant/ellipses'
+  path_pattern: '/mn/sarpanitu/ansatte-u4/vegarant/storage_firenet/samp_patt'
+  sample_nbr: 24
+  intensity_diff: 30
+FIRENET:
+  delta: 1.0e-06
+  lam: 0.001
+  n_iter: 5
+  p_iter: 25
+  sparsities: null
+  use_weights: false
+  vm: 1
+SAMP_PATT:
+  N: 512
+  is_fourier: true
+  name: 'gcircle'
+  vm: 1

@@ -2,8 +2,9 @@ import tensorflow as tf;
 import sys
 
 from operators import Fourier_operator
-from data_management import load_dataset, load_sampling_pattern 
+from data_management import load_sampling_pattern, Ellipses_dataset 
 from os.path import join
+import os
 
 import numpy as np
 from PIL import Image
@@ -20,7 +21,10 @@ with open(configfile) as ymlfile:
     cgf = yaml.load(ymlfile, Loader=yaml.SafeLoader);
 
 model_nbr = read_count('./')
-path_model = join(cgf['MODEL']['dest_model'], f'model_{model_nbr:03}');
+path_model_base = cgf['MODEL']['dest_model']
+if not os.path.isdir(path_model_base):
+    os.mkdir(path_model_base)
+path_model = join(path_model_base, f'model_{model_nbr:03}');
 clear_model_dir(path_model);
 
 
@@ -46,14 +50,12 @@ np_dtype = set_np_dtype(dtype);
 # DATA
 N = cgf['DATA']['N'];
 srate = cgf['DATA']['srate'];
-path_data = join(cgf['DATA']['path_data'], f"raw_data_{N}_TF")
+path_data = join(cgf['DATA']['path_data'], f"raw_data_{N}_TF_tumor")
 path_pattern = cgf['DATA']['path_pattern']
 
 vm = 1
 fname_pattern = f"spf2_DAS_N_{N}_srate_{round(100*srate)}_db{vm}.png"
 mask = load_sampling_pattern(join(path_pattern, fname_pattern));
-
-path_data = join(cgf['DATA']['path_data'], f"raw_data_{N}_TF")
 print('\nDATA')
 print(f'N: {N}')
 print(f'srate: {round(100*srate)}')
@@ -66,11 +68,16 @@ batch_size = cgf['TRAIN']['batch_size']
 nbr_epochs = cgf['TRAIN']['epochs']
 shuffle = cgf['TRAIN']['shuffle']
 train_size = cgf['TRAIN']['train_size']
+val_size = cgf['TRAIN']['val_size']
+test_size = cgf['TRAIN']['test_size']
 add_noise = cgf['TRAIN']['add_noise']
 noise_level = cgf['TRAIN']['noise_level']
+intensity_diff = cgf['TRAIN']['intensity_diff']
 
 print('\nTRAIN:')
 print(f'train_size: {train_size}')
+print(f'test_size: {test_size}')
+print(f'val_size: {val_size}')
 print(f'batch_size: {batch_size}')
 print(f'epochs: {nbr_epochs}')
 print(f'shuffle: {shuffle}')
@@ -91,21 +98,19 @@ lr = 1e-2
 momentun = 0.9
 lam = 0.01;
 
-# Load data
-if train_size < 0:
-    data_train = load_dataset(join(path_data, 'train'))
-else:
-    data_train = load_dataset(join(path_data, 'train'), size = train_size)
+ds_train = Ellipses_dataset(join(path_data, 'train'), train_size, N,
+                            intensity_diff=intensity_diff,
+                            dtype=dtype)
 
-size_data_train = data_train.shape[0];
+ds_val = Ellipses_dataset(join(path_data, 'val'), val_size, N,
+                            intensity_diff=intensity_diff,
+                            dtype=dtype)
 
-data_val = load_dataset(join(path_data, 'val'))
-
-train_ds = tf.data.dataset.from_tensor_slices(data_train).batch(batch_size);
-val_ds = tf.data.dataset.from_tensor_slices(data_val).batch(batch_size);
+ds_train = ds_train.batch(batch_size)
+ds_val = ds_val.batch(batch_size)
 
 if shuffle:
-    train_ds.shuffle(10);
+    ds_train = ds_train.shuffle(10);
 
 # Initialize sampling operator
 opA = Fourier_operator(mask, dtype=dtype)
@@ -155,13 +160,13 @@ for epoch in range(nbr_epochs):
     train_loss.reset_states()
     val_loss.reset_states()
 
-    for images in tqdm(train_ds, desc='Training, baches', total=size_data_train//batch_size):
+    for images in tqdm(ds_train, desc='Training, baches', total=train_size//batch_size):
         train_step(images)
 
-    for val_images in val_ds:
+    for val_images in ds_val:
         val_step(val_images)
 
-    fname_model = f'model_epoch_{epoch}';
+    fname_model = f'model_epoch_{epoch:02d}';
     model.save_weights(join(path_model, fname_model))
 
     print(
