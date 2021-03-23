@@ -24,7 +24,7 @@ CS_param:
     wavelet_name: 'db1'
     levels: 5
     delta: 0.000000001  # Only for exponential decay
-    initial_x_zero: no 
+    initial_x_zero: no # If no, it uses the output from AUTOMAP, if yes, it uses 0. 
     use_weights: yes
     weights_param:
         sparsity_levels: [4, 12, 48, 50, 100, 100]

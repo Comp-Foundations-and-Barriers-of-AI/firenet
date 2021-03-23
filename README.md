@@ -20,17 +20,17 @@ To make all the code run seamlessly, you need to download the data and modify th
 
 ------------------------------
 
-* `Demo_test_firenet_stability_auto.py` - Compute perturbations with sizes similar to what we found for the AUTOMAP network
-* `Demo_test_firenet_stability_ell.py` - Computes a perturbation for an ellipse image. 
-* `Demo_test_firenet_stability_general.py` - Compute perturbations for many different images. All perturbations have roughly the same size.
-* `Demo_test_automap_as_input_to_firenet.py` - Uses the output from AUTOMAP as an initial guess for solution in the FIRENET.
-* `config_auto.yml` - Configuration file for the script `Demo_test_firenet_stability_auto.py`
-* `config_ell.yml` - Configuration file for the script `Demo_test_firenet_stability_ell.py`
-* `config_general.yml` - Configuration file for the script `Demo_test_firenet_stability_general.py`
-* `COUNT_auto.yml` - Experiment count for the script `Demo_test_firenet_stability_auto.py`
-* `COUNT_ell.yml` - Experiment count for the script `Demo_test_firenet_stability_ell.py`
-* `COUNT_general.yml` - Experiment count for the script `Demo_test_firenet_stability_general.py`
-* `adv_tools_PNAS/automap_config.py` - This file sets the path to much of the data. Remember to modify the paths.
+* `instability/Demo_test_firenet_stability_auto.py` - Compute perturbations with sizes similar to what we found for the AUTOMAP network
+* `instability/Demo_test_firenet_stability_ell.py` - Computes a perturbation for an ellipse image. 
+* `instability/Demo_test_firenet_stability_general.py` - Compute perturbations for many different images. All perturbations have roughly the same size.
+* `instability/Demo_test_automap_as_input_to_firenet.py` - Uses the output from AUTOMAP as an initial guess for solution in the FIRENET.
+* `instability/config_auto.yml` - Configuration file for the script `Demo_test_firenet_stability_auto.py`
+* `instability/config_ell.yml` - Configuration file for the script `Demo_test_firenet_stability_ell.py`
+* `instability/config_general.yml` - Configuration file for the script `Demo_test_firenet_stability_general.py`
+* `instability/COUNT_auto.yml` - Experiment count for the script `Demo_test_firenet_stability_auto.py`
+* `instability/COUNT_ell.yml` - Experiment count for the script `Demo_test_firenet_stability_ell.py`
+* `instability/COUNT_general.yml` - Experiment count for the script `Demo_test_firenet_stability_general.py`
+* `instability/adv_tools_PNAS/automap_config.py` - This file sets the path to much of the data. Remember to modify the paths.
 
 ------------------------------
 
@@ -44,10 +44,10 @@ The code depends on the [UiO-CS/optimization](https://github.com/UiO-CS/optimiza
 
 ------------------------------
 
-* `adv_tools_PNAS/*` - This directory contains all the code from the [PNAS paper](https://doi.org/10.1073/pnas.1907377117) necessary to compute the worst-case perturbations for the AUTOMAP network.
-* `Demo_test_automap_stability.py` - Script for computing worst-case perturbations for AUTOMAP.
-* `_2fc_2cnv_1dcv_L1sparse_64x64_tanhrelu_upg.py` - The AUTOMAP architecture (obtained after communicating with the authors of the network).
-* `adv_tools_PNAS/automap_config.py` - This file contains many of the paths to the data. Remember to modify these paths before trying the other scripts.
+* `instability/adv_tools_PNAS/*` - This directory contains all the code from the [PNAS paper](https://doi.org/10.1073/pnas.1907377117) necessary to compute the worst-case perturbations for the AUTOMAP network.
+* `instability/Demo_test_automap_stability.py` - Script for computing worst-case perturbations for AUTOMAP.
+* `instability/_2fc_2cnv_1dcv_L1sparse_64x64_tanhrelu_upg.py` - The AUTOMAP architecture (obtained after communicating with the authors of the network).
+* `instability/adv_tools_PNAS/automap_config.py` - This file contains many of the paths to the data. Remember to modify these paths before trying the other scripts.
 
 ------------------------------
 
