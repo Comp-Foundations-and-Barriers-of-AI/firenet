@@ -239,13 +239,17 @@ adj_real_idwt = idwt2d(tf.math.real(tf_adjoint_coeffs), db_wavelet, nres)
 adj_imag_idwt = idwt2d(tf.math.imag(tf_adjoint_coeffs), db_wavelet, nres)
 tf_adjoint = tf.complex(adj_real_idwt, adj_imag_idwt)
 
+
+
 if initial_x_zero:
     print("x_0 = 0")
-    tf_initial_x = tf.zeros_like(tf_input)
+    np_initial_x = np.zeros([N, N, 1])
 else:
-    tf_initial_x = op(tf_measurements, adjoint=True)
-    print('x_0 = A^* y')
-
+    pil_im = Image.open(join(src_data, 'runners', 'runner_19_r_idx_4_noisy_rec.png'))
+    np_initial_x = np.asarray(pil_im, 'float64')/255;
+    np_initial_x = np.expand_dims(np_initial_x, -1);
+    print('x_0 = output from AUTOMAP')
+tf_initial_x = tf.compat.v1.placeholder(cdtype, shape=[N,N,1], name='x0')
 if alg_name.lower() ==  'firenet':
     alg = SR_LASSO_exponential(tf_measurements, tf_initial_x, op, p_iter=pl_p_iter, tau=pl_tau, sigma=pl_sigma,  lam=pl_lam, weights_mat=pl_weights, L_A=tf_L_A, eps_0=pl_eps_0, delta=pl_delta, dtype=dtype)
     result_coeffs = alg.run(n_iter=pl_n_iter)
@@ -283,6 +287,7 @@ with tf.compat.v1.Session() as sess:
                                                   'eps_0:0': epsilon_0,
                                                   'delta:0': delta,
                                                   'sampling_pattern:0': samp,
+                                                  'x0:0': np_initial_x,
         })
     print('Computed noiseless reconstruction')
     
@@ -319,6 +324,7 @@ with tf.compat.v1.Session() as sess:
                                  'p_iter:0': p_iter,
                                  'noise_penalty:0': stab_lambda,
                                  'weights:0': weights,
+                                 'x0:0': np_initial_x,
                                  'actual:0': noiseless})
 
         rr = sess.run(tf.complex(tf_rr_real, tf_rr_imag))
@@ -332,6 +338,7 @@ with tf.compat.v1.Session() as sess:
                                                          'p_iter:0': p_iter,
                                                          'noise_penalty:0': stab_lambda,
                                                          'weights:0': weights,
+                                                         'x0:0': np_initial_x,
                                                          'actual:0': noiseless})
 
 
@@ -346,6 +353,7 @@ with tf.compat.v1.Session() as sess:
                                                      'weights:0': weights,
                                                      'noise_penalty:0': stab_lambda,
                                                      'lambda:0': lam,
+                                                     'x0:0': np_initial_x,
                                                      'actual:0': noiseless})
 
         rr_save = np.squeeze(rr);
