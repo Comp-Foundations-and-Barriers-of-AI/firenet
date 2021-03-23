@@ -2,21 +2,21 @@
 
 DATA:
     N: 512
-    srate: 0.25
-    path_data: '/mn/nam-shub-01/scratch/vegarant/ellipses'
-    path_pattern: '/mn/sarpanitu/ansatte-u4/vegarant/storage_firenet/samp_patt'
+    srate: 0.12
+    path_data: '/itf-fi-ml/home/vegarant/storage/ellipses'
+    path_pattern: '/itf-fi-ml/home/vegarant/storage/samp_patt'
 
 MODEL:
     dest_model: 'models'
-    model_nbr: 5
+    model_nbr: 105
 
 TRAIN:
-    epochs: 50
-    batch_size: 5
+    epochs: 101
+    batch_size: 10
     train_size: 5000
     val_size: 50
     test_size: 4
-    intensity_diff: null
+    intensity_diff: 30 
     add_noise: no
     noise_level: 10
     shuffle: yes
@@ -30,6 +30,6 @@ COMPUTER_SETUP:
     use_gpu: yes
     dtype:   'tf.float32'
     cdtype:  'tf.complex64'
-    compute_node: 1
+    compute_node: 4
 
 

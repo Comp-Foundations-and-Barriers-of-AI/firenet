@@ -54,7 +54,7 @@ path_data = join(cgf['DATA']['path_data'], f"raw_data_{N}_TF_tumor")
 path_pattern = cgf['DATA']['path_pattern']
 
 vm = 1
-fname_pattern = f"spf2_DAS_N_{N}_srate_{round(100*srate)}_db{vm}.png"
+fname_pattern = f"spf2_DAS_N_{N}_srate_{round(100*srate):02d}_db{vm}.png"
 mask = load_sampling_pattern(join(path_pattern, fname_pattern));
 print('\nDATA')
 print(f'N: {N}')
@@ -83,6 +83,7 @@ print(f'epochs: {nbr_epochs}')
 print(f'shuffle: {shuffle}')
 print(f'add_noise: {add_noise}')
 print(f'noise_level: {noise_level}')
+print(f'intensity_diff: {intensity_diff}')
 
 kernel_size = eval(cgf['NETWORK']['kernel_size'])
 use_bias = cgf['NETWORK']['use_bias']

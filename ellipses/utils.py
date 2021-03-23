@@ -9,6 +9,7 @@ import shutil
 def compute_radius(opA, images):
     return tf.math.sqrt(tf.reduce_sum(tf.math.pow(tf.math.abs(opA(images)), 2), axis=(1,2,3), keepdims=True));
 
+
 def save_data_as_im_single(opA, model, data, model_nbr, im_nbr, set_name, dest):
     adj = opA.adjoint(opA(data))
     me = tf.concat((tf.math.real(adj), tf.math.imag(adj)), axis=-1)
@@ -27,7 +28,7 @@ def save_data_as_im_single(opA, model, data, model_nbr, im_nbr, set_name, dest):
     im_frame[:,2*N+2*bd:] = im_adj;
 
     im1 = Image.fromarray(np.uint8(255*cut_to_01(im_frame)))
-    fname = f'im_mod_{model_nbr}_{set_name}_nbr_{im_nbr}.png';
+    fname = f'im_mod_{model_nbr}_{set_name}_nbr_{im_nbr:03d}.png';
     im1.save(join(dest,fname));
 
 def save_data_as_im(opA, model, data, model_nbr, im_nbr, set_name, dest):

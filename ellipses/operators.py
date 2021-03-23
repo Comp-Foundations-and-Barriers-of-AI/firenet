@@ -88,11 +88,11 @@ class Fourier_operator(LinearOperator):
         assert z.shape[-1] == 2
         return tf.expand_dims( tf.complex(z[..., 0] , z[..., 1]), -1);
 
-    def __call__(self, x, output_real=False, add_noise=False, max_noise_magnitude=10):
-        return self.forward(x, output_real=output_real, add_noise=add_noise, max_noise_magnitude=max_noise_magnitude);
+    def __call__(self, x, output_real=False, add_noise=False, max_noise_magnitude=10, noise_magnitude_fixed=None):
+        return self.forward(x, output_real=output_real, add_noise=add_noise, max_noise_magnitude=max_noise_magnitude, noise_magnitude_fixed=noise_magnitude_fixed);
         
 
-    def forward(self, x, output_real=False, add_noise=False, max_noise_magnitude=10):
+    def forward(self, x, output_real=False, add_noise=False, max_noise_magnitude=10, noise_magnitude_fixed=None):
         """
         Arguments:
         x: Tensor with shape [batch_size, height, width, channels]
@@ -104,7 +104,11 @@ class Fourier_operator(LinearOperator):
         max_noise_magnitude (float > 0): First a number `mag` is drawn from the 
                             uniform distribution on [0, max_noise_magnitude], then 
                             a noise vector `noise` is drawn from a normal distribution.
-                            The noise `mag*noise` are added to the measurements. 
+                            The noise `mag*noise` are added to the measurements.
+        noise_magnitude_fixed (float): If this number is not None, then it overrides the 
+                             argument `max_noise_magnitude`. If it is a float, then 
+                             we draw a vector `noise` from a normal distribution. The noise
+                             `noise_magnitude_fixed*noise`, is then added to the measurements.       
         """
         if x.shape[-1] == 2:
             x = self._to_complex(x)
@@ -112,10 +116,14 @@ class Fourier_operator(LinearOperator):
         z = tf.cast(z, self.cdtype)
         z = tf.signal.fftshift(tf.signal.fft2d(z), axes=(2,3))/self.cN
 
+
         if add_noise:
 
             batch_size = x.shape[0];
-            magn = tf.random.uniform([batch_size,1,1,1], minval=0, maxval=max_noise_magnitude, dtype=self.dtype);
+            if noise_magnitude_fixed is None:
+                magn = tf.random.uniform([batch_size,1,1,1], minval=0, maxval=max_noise_magnitude, dtype=self.dtype);
+            else:
+                magn = noise_magnitude_fixed;
             noise_real = magn*tf.random.normal(z.shape, dtype=self.dtype)/np.sqrt(self.nbr_samples)
             noise_imag = magn*tf.random.normal(z.shape, dtype=self.dtype)/np.sqrt(self.nbr_samples)
             noise = tf.complex(noise_real, noise_imag);

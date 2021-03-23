@@ -1,19 +1,20 @@
 DATA:
-  srate: 0.15
-  path_data: '/mn/nam-shub-01/scratch/vegarant/ellipses'
-  path_pattern: '/mn/sarpanitu/ansatte-u4/vegarant/storage_firenet/samp_patt'
-  sample_nbr: 24
+  srate: 0.12
+  path_data: '/itf-fi-ml/home/vegarant/storage/ellipses'
+  path_pattern: '/itf-fi-ml/home/vegarant/storage/samp_patt'
+  sample_nbr: '[0,1,2,3,4,5]'
   intensity_diff: 30
+  add_noise: yes
+  noise_level: '[2,5,7,10]'
 FIRENET:
   delta: 1.0e-06
   lam: 0.001
   n_iter: 5
-  p_iter: 25
+  p_iter: 5
   sparsities: null
   use_weights: false
   vm: 1
 SAMP_PATT:
   N: 512
   is_fourier: true
-  name: 'gcircle'
   vm: 1
