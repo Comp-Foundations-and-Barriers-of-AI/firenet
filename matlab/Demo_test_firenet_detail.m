@@ -1,3 +1,4 @@
+% This script reconstructs an image with the text "Can u see it?" using FIRENET.
 clear
 close all;
 dwtmode('per', 'nodisp'); % Use periodic wavelets
@@ -69,7 +70,7 @@ p_iter = 5;
 delta = 10^(-9);
 n_iter = 5;
 
-%% Exectue the exponentially convergent algorithm for square root lasso
+%% Apply the firenet 
 x0 = zeros([N*N, 1]);
 [rec_wcoeff,PSI] = cp_expo_sr_lasso(y, x0, opA, p_iter, tau, sigma, lam, weights, L_A, eps_0, delta, n_iter, 0);
 %[x_final,PSI_slow] = sq_lasso_conv(y, opA, tau, sigma, lam, weights, 40, 0,rec_wcoeff);
