@@ -1,4 +1,4 @@
-# 4. Testing and train of the networks for image reconstruction of ellipses images.
+# Testing and train of the networks for image reconstruction of ellipses images.
 
 ### Relevant files
 

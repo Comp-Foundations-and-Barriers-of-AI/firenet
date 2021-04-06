@@ -1,6 +1,6 @@
-##Testing LISTA and FIRENETs on inexact inputs
+## Testing LISTA and FIRENETs on inexact inputs
 
-This code is meant to illustrate that neither a LISTA network or FIRENETs, in general can solve the problem (P_3) given inexact training data.
+This code is meant to illustrate that neither LISTA networks nor FIRENETs can solve the problem (P_3) given inexact training data.
 
 ### Relevant files
 
